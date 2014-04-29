@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SeeMoreApp</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <%= notifiably_audited('alert(data.title + "--" + data.comment);').html_safe %>
+
+</head>
+<p class="notice"><%= notice %></p>
+<p class="alert"><%= alert %></p>
+<p class="notification"></p>
+<div id="user_nav">
+  <% if user_signed_in? %>
+    Signed in as <%= current_user.email %>. Not you?
+    <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>
+  <% else %>
+    <%= link_to "Sign up", new_user_registration_path %> or <%= link_to "sign in", new_user_session_path %>
+  <% end %>
+</div>
+<div style="color: #555753;background-color:#e1f5e0;padding:0 5px 0 5px;">
+<% %w(product brand seller category).each do |l| %>
+<%= link_to "New " + l.titleize,send("new_" + l + "_path") %> | 
+<% end %> 
+<% %w(products brands sellers categories).each do |l| %>
+<%= link_to l.titleize,send(l + "_path") %> | 
+<% end %>
+</div>
+<body>
+
+<%= yield %>
+<br/>
+<br/>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @product.name %>
+</p>
+
+<p>
+  <b>Desc:</b>
+  <%= see_more(@product,:desc,{classes: "first second",content_size: 20,db: true}) %>
+</p>
+<p>
+  <b>Color:</b>
+  <%= @product.color %>
+</p>
+<p>
+  <b>Score:</b>
+  <%= @product.score %>
+</p>
+
+<p>
+  <b>Assigned To:</b>
+  <%= User.find(@product.assigned_to).email rescue "Sorry Error!" %>
+</p>
+
+
+<p>
+  <b>Status:</b>
+  <%= ProductStatus.find(@product.product_status_id).name rescue "Sorry Error!" %>
+</p>
+
+
+
+<h4> Comments</h4>
+
+
+  <% @product.comments.each do |c| %>
+
+    <small><%= c.content %></small><br/>
+    <small><i><%= c.created_at.to_date %></i></small>
+    <br/>
+    <br/>
+  <% end %>
+
+
+
+   <%= form_for(@product) do |f| %>
+       <%= f.fields_for :comments,Comment.new do |c| %>
+         <%= c.text_area :content %>
+         <br/>
+         <%= c.submit 'write' %>
+       <% end %>
+   <% end %>
+<br/>
+<br/>
+<%= link_to 'Edit', edit_product_path(@product) %> |
+<%= link_to 'Back', products_path %>
+
+
+<% @product.audits.descending.each do |audit| %>
+  <h3>Version <%= audit.version %> </h3>
+  <table>
+    <thead>
+      <tr>
+        <th> Field</th>
+        <th> Old Value</th>
+        <th> New Value</th>
+    </thead>
+    <tbody>
+      <% audit.audited_changes.each do |field,value| %>
+        <tr>
+          <td><%= field %></td>
+          <td><%= value.class == Array ? value[0] : '' %></td>
+          <td><%= value.class == Array ? value[1] : value %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
